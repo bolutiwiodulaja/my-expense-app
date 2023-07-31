@@ -1,25 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import Body from "./components/UI/Body";
+import Header from "./components/UI/Header";
+import NameAndCurrency from "../src/components/NameAndCurrency/NameAndCurrency";
 
-function App() {
+import "./App.css";
+import React, { useState } from "react";
+
+const App = (props) => {
+  const [expenseTotalCost, setExpenseTotalCost] = useState("");
+  const [nameAndCurrency, setNameAndCurrency] = useState(false);
+  const [nameAndCurrencyInfo, setNameAndCurrencyInfo] = useState("");
+
+  const totalExpenseCostHandler = (e) => {
+    setExpenseTotalCost(e);
+  };
+
+  const routeToExpenseApp = (e) => {
+    setNameAndCurrencyInfo(e);
+    setNameAndCurrency(true);
+  };
+
+  console.log(nameAndCurrencyInfo);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {!nameAndCurrency && <NameAndCurrency onSubmitInfo={routeToExpenseApp} />}
+      {nameAndCurrency && (
+        <header className="App-header">
+          <Header
+            totalExpenseCost={expenseTotalCost}
+            currency={nameAndCurrencyInfo.selectedCurrency}
+            userName={nameAndCurrencyInfo.userName}
+          />
+          <Body
+            totalExpenseCost={totalExpenseCostHandler}
+            currency={nameAndCurrencyInfo.selectedCurrency}
+          />
+        </header>
+      )}
     </div>
   );
-}
+};
 
 export default App;

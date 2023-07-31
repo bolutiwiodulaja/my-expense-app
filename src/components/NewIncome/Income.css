@@ -1,0 +1,24 @@
+
+.income{
+  margin-bottom: -10px;
+}
+.icons{
+  height: 25px;
+  width: auto;
+}
+
+.incomeTotal {
+  font-size: 45px;
+  margin-bottom: -5px;
+}
+
+.incomeList {
+  overflow: auto;
+max-height: 90px;
+
+}
+
+.minimizeButton{
+  background-color: transparent;
+  color: grey;
+}

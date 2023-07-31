@@ -1,0 +1,21 @@
+.nameAndCurrencyContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: rgb(166, 245, 166);
+}
+
+.nameAndCurrency {
+  display: flex;
+  flex-direction: column;
+}
+
+.nameAndCurrencyInputField {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  color: white;
+  background-color: rgb(166, 245, 166);
+  margin-bottom: 5px;
+}

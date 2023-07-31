@@ -1,0 +1,22 @@
+
+.totalExpenseContainer{
+  font-family: "Proxima Nova";
+  background-color:white;
+  min-height: 75vh;
+  border-top-right-radius: 25px;
+  border-top-left-radius: 25px;
+}
+      
+.mainBody {
+  margin-top: 25px;
+}
+
+.todaysDate {
+  font-size: 25px;
+}
+
+.expenseTotal {
+  color: sandybrown;
+  font-size: 25px;
+  margin-bottom: 25px;
+}
