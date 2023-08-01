@@ -38,7 +38,8 @@ export const NameAndCurrency = (props) => {
   };
   console.log(selectedCurrency);
   return (
-    <div className="nameAndCurrencyContainer">
+    <div className="orbMoneyAccess">
+      <p className="appName">ORB MONEY</p>
       <form onSubmit={submitHandler} className="nameAndCurrency">
         <input
           className="nameAndCurrencyInputField"

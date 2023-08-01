@@ -121,8 +121,6 @@ const ExpenseList = (props) => {
             {props.bttn}
           </div>
         </p>
-      </div>
-      <div className="row">
         <p className="d-flex offset-1 col-10 date-note">
           {props.date}: {props.note}
         </p>

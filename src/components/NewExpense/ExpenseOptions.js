@@ -27,18 +27,16 @@ const ExpenseOptions = (props) => {
     setExpense(e.target.value);
   };
   return (
-    <div className="container">
-      <div className="offset-2 col-8">
-        <select
-          value={expense}
-          onChange={onChangeHandler}
-          className="selectField inputField w-100"
-        >
-          {expenseOption.map((expense) => (
-            <option value={expense.value}>{expense.expense}</option>
-          ))}
-        </select>
-      </div>
+    <div className="offset-2 col-8">
+      <select
+        value={expense}
+        onChange={onChangeHandler}
+        className="selectField inputField w-100"
+      >
+        {expenseOption.map((expense) => (
+          <option value={expense.value}>{expense.expense}</option>
+        ))}
+      </select>
     </div>
   );
 };

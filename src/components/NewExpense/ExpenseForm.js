@@ -26,6 +26,10 @@ const ExpenseForm = (props) => {
     setDate(e);
   };
 
+  const noteChangeHandler = (e) => {
+    setNote(e.target.value);
+  };
+
   const submitHandler = (e) => {
     e.preventDefault();
 
@@ -44,33 +48,36 @@ const ExpenseForm = (props) => {
   };
 
   return (
-    <div className="container inputForm">
+    <div className="container">
       <div className="row">
-        <form onSubmit={submitHandler}>
-          <input
-            placeholder="expense amount"
-            value={expenseAmount}
-            onChange={expenseAmountHandler}
-            type="number"
-            min="1"
-            max="1000000000"
-            className="col-8 inputField"
-          />
-          <ExpenseOptions optionsValue={typeChangeHandler} />
-          <ExpenseDate dateValue={dateChangeHandler} />
-          <input
-            placeholder="notes (30 character limit)"
-            value={note}
-            type="string"
-            maxlength="30"
-            className="col-8 inputField"
-          />
-          <div>
-            <button type="submit">
-              <span>ADD</span>
-            </button>
-          </div>
-        </form>
+        <div className="inputForm">
+          <form onSubmit={submitHandler}>
+            <input
+              placeholder="expense amount"
+              value={expenseAmount}
+              onChange={expenseAmountHandler}
+              type="number"
+              min="1"
+              max="1000000000"
+              className="col-8 inputField"
+            />
+            <ExpenseOptions optionsValue={typeChangeHandler} />
+            <ExpenseDate dateValue={dateChangeHandler} />
+            <input
+              placeholder="notes (30 character limit)"
+              value={note}
+              type="string"
+              maxlength="30"
+              className="col-8 inputField"
+              onChange={noteChangeHandler}
+            />
+            <div>
+              <button type="submit">
+                <span>ADD</span>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

@@ -12,18 +12,16 @@ const ExpenseDate = (props) => {
     setDate(date);
   };
   return (
-    <div className="container">
-      <div className="col-8 offset-2">
-        <div className="customDatePickerWidth">
-          <DatePicker
-            selected={date}
-            onChange={datePickerHandler}
-            className="selectField inputField w-100"
-            dateFormat="dd-MMM-yyyy"
-            showYearDropdown
-            scrollableMonthYearDropdown
-          />
-        </div>
+    <div className="col-8 offset-2">
+      <div className="customDatePickerWidth">
+        <DatePicker
+          selected={date}
+          onChange={datePickerHandler}
+          className="selectField inputField w-100"
+          dateFormat="dd-MMM-yyyy"
+          showYearDropdown
+          scrollableMonthYearDropdown
+        />
       </div>
     </div>
   );

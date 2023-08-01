@@ -4,7 +4,6 @@ import IncomeList from "./IncomeList";
 import "bootstrap/dist/css/bootstrap.css";
 import "./Income.css";
 import del from "../Img/del-Freepik.png";
-import edit from "../Img/IncomeImg/edit.png";
 
 const Income = (props) => {
   const [incomes, setIncomes] = useState([]);
@@ -16,7 +15,7 @@ const Income = (props) => {
     setIncomes((existingIncomes) => {
       return [e, ...existingIncomes];
     });
-    if (incomes.length > 0) {
+    if (incomes.length >= 0) {
       setEntryIncluded(true);
     }
   };
@@ -71,12 +70,13 @@ const Income = (props) => {
           />
         )}
         {!incomeList && !editIncome && (
-          <img
-            className="icons"
+          <button
             onClick={incomeListHandler}
-            src={edit}
-            alt="edit"
-          />
+            className="minimizeButton"
+            type="button"
+          >
+            ˅
+          </button>
         )}
       </div>
       {incomeList && !entryIncluded && <p>You have not included any income</p>}
@@ -101,15 +101,14 @@ const Income = (props) => {
             />
           ))}
       </div>
-
       {incomeList && (
-        <div className="minimizeButton">
-          {
-            <button onClick={stopIncomeListHandler} type="button">
-              <span>^</span>
-            </button>
-          }
-        </div>
+        <button
+          onClick={stopIncomeListHandler}
+          className="minimizeButton"
+          type="button"
+        >
+          ˄
+        </button>
       )}
     </div>
   );

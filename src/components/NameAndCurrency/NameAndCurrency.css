@@ -1,9 +1,18 @@
-.nameAndCurrencyContainer {
+.orbMoneyAccess  {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
   background-color: rgb(166, 245, 166);
+}
+
+
+.appName{
+  color: white;
+  font-size: 30px;
+  font-weight: 400;
 }
 
 .nameAndCurrency {
