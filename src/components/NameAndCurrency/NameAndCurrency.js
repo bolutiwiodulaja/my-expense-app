@@ -34,7 +34,7 @@ export const NameAndCurrency = (props) => {
       userName: userName,
     };
 
-    fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=281", {
+    /*fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=281", {
       method: "POST",
       mode: "cors",
       credentials: "same-origin",
@@ -48,7 +48,7 @@ export const NameAndCurrency = (props) => {
       }),
     }).then(() => {
       console.log("userInfo added");
-    });
+    });*/
 
     props.onSubmitInfo(nameAndCurrencyInfo);
   };

@@ -24,28 +24,6 @@ const App = (props) => {
     setNameAndCurrency(true);
   };
 
-  const checkStatus = (response) => {
-    if (response.ok) {
-      return response;
-    }
-    throw new Error("Request was either a 404 or 500");
-  };
-
-  const json = (response) => response.json();
-
-  useEffect(() => {
-    fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=281")
-      .then(checkStatus)
-
-      .then((response) => {
-        console.log(response);
-        return response.json();
-      })
-      .then(() => {
-        console.log("data");
-      });
-  }, []);
-
   return (
     <div className="App">
       {!nameAndCurrency && <NameAndCurrency onSubmitInfo={routeToExpenseApp} />}

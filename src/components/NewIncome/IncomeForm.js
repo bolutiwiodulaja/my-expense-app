@@ -22,14 +22,17 @@ const IncomeForm = (props) => {
       amount: enteredAmount,
       id: Math.random().toString(),
     };
-
+    fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=281", {
+      method: "POST",
+      mode: "cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(incomeInfo),
+    });
     props.onIncomeInfoInput(incomeInfo);
 
     setEnteredDescription("");
     setEnteredAmount("");
     props.onStopEdit();
-
-    console.log(incomeInfo);
   };
 
   return (

@@ -42,7 +42,7 @@ const ExpenseForm = (props) => {
     };
     props.onExpenseInfoInput(expenseInfo);
 
-    fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=281", {
+    /* fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=281", {
       method: "POST",
       mode: "cors",
       credentials: "same-origin",
@@ -52,7 +52,7 @@ const ExpenseForm = (props) => {
       body: JSON.stringify([expenseInfo]),
     }).then(() => {
       console.log("expense added");
-    });
+    });*/
 
     setExpenseAmount("");
     setType("");
