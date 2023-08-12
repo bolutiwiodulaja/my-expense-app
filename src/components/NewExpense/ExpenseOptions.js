@@ -8,7 +8,7 @@ const ExpenseOptions = (props) => {
     { value: "home", expense: "home" },
     { value: "utility", expense: "utility" },
     { value: "living essentials", expense: "living essentials" },
-    { value: "loan payment", expense: "loan payment" },
+    { value: "debt", expense: "debt" },
     { value: "pet cost", expense: "pet cost" },
     { value: "internet", expense: "internet" },
     { value: "subscription", expense: "subscription" },

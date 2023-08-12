@@ -41,6 +41,19 @@ const ExpenseForm = (props) => {
       id: Math.random().toString(),
     };
     props.onExpenseInfoInput(expenseInfo);
+
+    fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=281", {
+      method: "POST",
+      mode: "cors",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify([expenseInfo]),
+    }).then(() => {
+      console.log("expense added");
+    });
+
     setExpenseAmount("");
     setType("");
     setDate("");

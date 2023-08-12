@@ -31,6 +31,7 @@ const Expense = (props) => {
     return prev + +current.expenseAmount;
   }, 0);
 
+  props.expensesList(expenses);
   props.expenseTotal(sum);
   console.log(expenses);
   return (

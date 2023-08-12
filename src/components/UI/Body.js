@@ -20,6 +20,7 @@ const Body = (props) => {
   ];
 
   const [total, setTotal] = useState("");
+  const [expensesList, setExpensesList] = useState("");
 
   const current = new Date();
 
@@ -31,6 +32,11 @@ const Body = (props) => {
     setTotal(e);
   };
 
+  const expensesListHandler = (e) => {
+    setExpensesList(e);
+  };
+
+  props.expensesList(expensesList);
   props.totalExpenseCost(total);
 
   return (
@@ -47,6 +53,7 @@ const Body = (props) => {
           <div className="row">
             <Expense
               expenseTotal={expenseTotalHandler}
+              expensesList={expensesListHandler}
               currency={props.currency}
             />
           </div>

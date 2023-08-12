@@ -18,6 +18,12 @@ const Income = (props) => {
     if (incomes.length >= 0) {
       setEntryIncluded(true);
     }
+    fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=281", {
+      method: "POST",
+      mode: "cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(incomes),
+    });
   };
 
   const editIncomeHandler = () => {

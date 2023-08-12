@@ -39,7 +39,7 @@ const ExpenseList = (props) => {
         alt="toiletpaper icon by Design Circle"
       />
     );
-  } else if (type === "loan payment") {
+  } else if (type === "debt") {
     expenseImg = (
       <img className="expenseImg" src={loan} alt="loan icon by Freepik" />
     );

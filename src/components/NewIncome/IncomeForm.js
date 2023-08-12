@@ -24,9 +24,12 @@ const IncomeForm = (props) => {
     };
 
     props.onIncomeInfoInput(incomeInfo);
+
     setEnteredDescription("");
     setEnteredAmount("");
     props.onStopEdit();
+
+    console.log(incomeInfo);
   };
 
   return (
