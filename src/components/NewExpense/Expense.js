@@ -33,7 +33,7 @@ const Expense = (props) => {
 
   props.expensesList(expenses);
   props.expenseTotal(sum);
-  console.log(expenses);
+
   return (
     <div className="expense">
       {!editExpenses && (

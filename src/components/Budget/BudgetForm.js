@@ -44,7 +44,6 @@ const BudgetForm = (props) => {
     setType("");
   };
 
-  console.log(type);
   return (
     <div>
       <form onSubmit={submitHandler}>

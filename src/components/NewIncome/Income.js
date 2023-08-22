@@ -18,14 +18,19 @@ const Income = (props) => {
     if (incomes.length >= 0) {
       setEntryIncluded(true);
     }
+
     fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=281", {
       method: "POST",
       mode: "cors",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(incomes),
+      body: {
+        task: {
+          content: JSON.stringify(incomes),
+        },
+      },
     });
   };
-
+  console.log(incomes);
   const editIncomeHandler = () => {
     setEditIncome(true);
   };
@@ -91,10 +96,10 @@ const Income = (props) => {
           entryIncluded &&
           incomes.map((income) => (
             <IncomeList
-              key={income.id}
-              description={income.description}
+              key={income.task.content.id}
+              description={income.task.content.description}
               currency={props.currency}
-              amount={income.amount}
+              amount={income.task.content.amount}
               bttn={
                 <img
                   src={del}
