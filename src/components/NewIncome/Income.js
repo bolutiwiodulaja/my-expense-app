@@ -12,10 +12,13 @@ const Income = (props) => {
   const [entryIncluded, setEntryIncluded] = useState(false);
 
   const addIncome = (e) => {
+    let newIcomesState = [];
     setIncomes((existingIncomes) => {
-      return [e, ...existingIncomes];
+      newIcomesState = [e, ...existingIncomes];
+      return newIcomesState;
     });
-    if (incomes.length >= 0) {
+    // setState is async, either do this or use useEffect to make the ajax call
+    if (newIcomesState.length >= 0) {
       setEntryIncluded(true);
     }
 
@@ -23,11 +26,11 @@ const Income = (props) => {
       method: "POST",
       mode: "cors",
       headers: { "Content-Type": "application/json" },
-      body: {
+      body: JSON.stringify({
         task: {
-          content: JSON.stringify(incomes),
+          content: newIcomesState.map(i => JSON.stringify(i)).join('<=>'),
         },
-      },
+      }),
     });
   };
   console.log(incomes);

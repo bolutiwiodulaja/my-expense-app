@@ -18,14 +18,10 @@ const IncomeForm = (props) => {
     e.preventDefault();
 
     const incomeInfo = {
-      task: {
-        content: {
-          description: enteredDescription,
-          amount: enteredAmount,
-          id: Math.random().toString(),
-        },
-      },
-    };
+      description: enteredDescription,
+      amount: enteredAmount,
+      id: Math.random().toString(),
+    }
 
     props.onIncomeInfoInput(incomeInfo);
 
