@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import IncomeForm from "./IncomeForm";
 import IncomeList from "./IncomeList";
 import "bootstrap/dist/css/bootstrap.css";
@@ -10,6 +10,27 @@ const Income = (props) => {
   const [editIncome, setEditIncome] = useState(false);
   const [incomeList, setIncomeList] = useState(false);
   const [entryIncluded, setEntryIncluded] = useState(false);
+  const [retrieveIncomeData, setRetrieveIncomeData] = useState([]);
+  let incomeData = [];
+
+  useEffect(() => {
+    fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=281")
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setRetrieveIncomeData(data.tasks);
+      });
+  }, []);
+
+  /*retrieveIncomeData.map((i) => {
+    incomeData.push(i.content);
+  });
+  console.log(incomeData);*/
+
+  retrieveIncomeData.map((i) => {
+    console.log(i.content["amount"]);
+  });
 
   const addIncome = (e) => {
     let newIcomesState = [];
@@ -28,12 +49,11 @@ const Income = (props) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         task: {
-          content: newIcomesState.map(i => JSON.stringify(i)).join('<=>'),
+          content: newIcomesState.map((i) => JSON.stringify(i)).join("<=>"),
         },
       }),
     });
   };
-  console.log(incomes);
   const editIncomeHandler = () => {
     setEditIncome(true);
   };
@@ -51,12 +71,25 @@ const Income = (props) => {
   };
 
   const deleteButtonHandler = (id) => {
+    fetch("https://fewd-todolist-api.onrender.com/tasks/${id}?api_key=281", {
+      method: "DELETE",
+      mode: "cors",
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then(() =>
+        setRetrieveIncomeData((data) => {
+          return data.filter((value) => value.id !== id);
+        })
+      );
+
     const updatedList = incomes.filter((e) => e.id !== id);
     setIncomes(updatedList);
   };
 
-  let sum = incomes.reduce(function (prev, current) {
-    return prev + +current.amount;
+  let sum = incomeData.reduce(function (prev, current) {
+    return prev + +current["amount"];
   }, 0);
 
   return (
@@ -97,12 +130,13 @@ const Income = (props) => {
       <div className="incomeList">
         {incomeList &&
           entryIncluded &&
-          incomes.map((income) => (
+          retrieveIncomeData &&
+          retrieveIncomeData.map((income) => (
             <IncomeList
-              key={income.task.content.id}
-              description={income.task.content.description}
+              key={income.content["id"]}
+              description={income.content["description"]}
               currency={props.currency}
-              amount={income.task.content.amount}
+              amount={income.content["amount"]}
               bttn={
                 <img
                   src={del}

@@ -89,7 +89,6 @@ const Budget = (props) => {
     }
   }
 
-  console.log(declearedBudgets);
   return (
     <div>
       <BudgetForm onBudgetInfoInput={addBudget} expensesList={expensesList} />
