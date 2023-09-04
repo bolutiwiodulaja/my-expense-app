@@ -24,22 +24,6 @@ const BudgetForm = (props) => {
 
     props.onBudgetInfoInput(budgetInfo);
 
-    /*fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=281", {
-      method: "POST",
-      mode: "cors",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        task: {
-          content: budgetInfo,
-        },
-      }),
-    }).then(() => {
-      console.log("budget added");
-    });*/
-
     setBudgetAmount("");
     setType("");
   };

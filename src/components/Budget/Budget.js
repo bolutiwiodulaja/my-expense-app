@@ -39,6 +39,8 @@ const Budget = (props) => {
     { id: 13, budget: -1, type: "other" },
   ]);
 
+  /*const [retrievedBudgets, setRetrievedBudgets] = useState([]);*/
+
   const modifiedBudgets = [
     { id: 1, budget: 0, type: "food & drink" },
     { id: 2, budget: 0, type: "home" },
@@ -58,6 +60,20 @@ const Budget = (props) => {
 
   const declearedBudgets = [];
 
+  /* useEffect(() => {
+    retrieveBudget();
+  }, []);
+
+  const retrieveBudget = () => {
+    fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=283")
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setRetrievedBudgets(data.tasks);
+      });
+  };*/
+
   for (let i = 0; i < expenseSum.length; i++) {
     for (let j = 0; j < expensesList.length; j++) {
       if (expenseSum[i].type === expensesList[j].type) {
@@ -70,16 +86,31 @@ const Budget = (props) => {
   }
 
   const addBudget = (e) => {
+    let newBudgetState = [];
     {
       setBudgets((existingBudgets) => {
         for (let i = 0; i < budgets.length; i++) {
           if (budgets[i].type === e.type) {
             budgets[i].budget = e.budgetAmount;
-            return [...existingBudgets];
+            newBudgetState = [...existingBudgets];
+            return newBudgetState;
           }
         }
       });
     }
+    console.log(newBudgetState);
+    fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=283", {
+      method: "POST",
+      mode: "cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        task: {
+          content: newBudgetState.map((i) => {
+            JSON.stringify(i);
+          }),
+        },
+      }),
+    });
   };
 
   for (let i = 0; i < budgets.length; i++) {

@@ -34,22 +34,6 @@ export const NameAndCurrency = (props) => {
       userName: userName,
     };
 
-    /*fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=281", {
-      method: "POST",
-      mode: "cors",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        task: {
-          content: nameAndCurrencyInfo,
-        },
-      }),
-    }).then(() => {
-      console.log("userInfo added");
-    });*/
-
     props.onSubmitInfo(nameAndCurrencyInfo);
   };
   console.log(selectedCurrency);

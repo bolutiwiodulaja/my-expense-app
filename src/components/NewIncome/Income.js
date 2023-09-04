@@ -10,27 +10,28 @@ const Income = (props) => {
   const [editIncome, setEditIncome] = useState(false);
   const [incomeList, setIncomeList] = useState(false);
   const [entryIncluded, setEntryIncluded] = useState(false);
-  const [retrieveIncomeData, setRetrieveIncomeData] = useState([]);
-  let incomeData = [];
+
+  const incomeData = incomes.map((i) => {
+    return JSON.parse(i.content);
+  });
 
   useEffect(() => {
-    fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=281")
+    retrieveIncome();
+  }, []);
+
+  const retrieveIncome = () => {
+    fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=282")
       .then((response) => {
         return response.json();
       })
       .then((data) => {
-        setRetrieveIncomeData(data.tasks);
+        setIncomes(data.tasks);
       });
-  }, []);
 
-  /*retrieveIncomeData.map((i) => {
-    incomeData.push(i.content);
-  });
-  console.log(incomeData);*/
-
-  retrieveIncomeData.map((i) => {
-    console.log(i.content["amount"]);
-  });
+    if (incomes.length >= 0) {
+      setEntryIncluded(true);
+    }
+  };
 
   const addIncome = (e) => {
     let newIcomesState = [];
@@ -38,12 +39,8 @@ const Income = (props) => {
       newIcomesState = [e, ...existingIncomes];
       return newIcomesState;
     });
-    // setState is async, either do this or use useEffect to make the ajax call
-    if (newIcomesState.length >= 0) {
-      setEntryIncluded(true);
-    }
 
-    fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=281", {
+    fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=282", {
       method: "POST",
       mode: "cors",
       headers: { "Content-Type": "application/json" },
@@ -53,7 +50,10 @@ const Income = (props) => {
         },
       }),
     });
+
+    retrieveIncome();
   };
+
   const editIncomeHandler = () => {
     setEditIncome(true);
   };
@@ -71,26 +71,27 @@ const Income = (props) => {
   };
 
   const deleteButtonHandler = (id) => {
-    fetch("https://fewd-todolist-api.onrender.com/tasks/${id}?api_key=281", {
+    if (!id) {
+      return;
+    }
+    fetch(`https://fewd-todolist-api.onrender.com/tasks/${id}?api_key=282`, {
       method: "DELETE",
       mode: "cors",
     })
       .then((response) => {
-        return response.json();
+        response.json();
       })
-      .then(() =>
-        setRetrieveIncomeData((data) => {
-          return data.filter((value) => value.id !== id);
-        })
-      );
-
-    const updatedList = incomes.filter((e) => e.id !== id);
-    setIncomes(updatedList);
+      .then((data) => {
+        console.log(data);
+        retrieveIncome();
+      });
   };
 
   let sum = incomeData.reduce(function (prev, current) {
-    return prev + +current["amount"];
+    return prev + +current.amount;
   }, 0);
+
+  console.log(incomes);
 
   return (
     <div className="income">
@@ -130,13 +131,12 @@ const Income = (props) => {
       <div className="incomeList">
         {incomeList &&
           entryIncluded &&
-          retrieveIncomeData &&
-          retrieveIncomeData.map((income) => (
+          incomes.map((income) => (
             <IncomeList
-              key={income.content["id"]}
-              description={income.content["description"]}
+              key={income.id}
+              description={JSON.parse(income.content).description}
               currency={props.currency}
-              amount={income.content["amount"]}
+              amount={JSON.parse(income.content).amount}
               bttn={
                 <img
                   src={del}
