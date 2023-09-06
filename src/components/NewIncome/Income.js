@@ -9,23 +9,27 @@ const Income = (props) => {
   const [incomes, setIncomes] = useState([]);
   const [editIncome, setEditIncome] = useState(false);
   const [incomeList, setIncomeList] = useState(false);
+  const [retrieveIncomeData, setRetrieveIncomeData] = useState([]);
   const [entryIncluded, setEntryIncluded] = useState(false);
 
-  const incomeData = incomes.map((i) => {
+  let arrayAonvertedIncomeData = Object.values(retrieveIncomeData);
+  let incomeData = arrayAonvertedIncomeData.map((i) => {
     return JSON.parse(i.content);
   });
+
+  console.log(incomes);
 
   useEffect(() => {
     retrieveIncome();
   }, []);
 
   const retrieveIncome = () => {
-    fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=282")
+    fetch("https://fewd-todolist-api.onrender.com/tasks/4303?api_key=281")
       .then((response) => {
         return response.json();
       })
       .then((data) => {
-        setIncomes(data.tasks);
+        setRetrieveIncomeData(data);
       });
 
     if (incomes.length >= 0) {
@@ -40,13 +44,15 @@ const Income = (props) => {
       return newIcomesState;
     });
 
-    fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=282", {
+    fetch(`https://fewd-todolist-api.onrender.com/task/4303?api_key=281`, {
       method: "POST",
       mode: "cors",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        task: {
-          content: newIcomesState.map((i) => JSON.stringify(i)).join("<=>"),
+        content: {
+          description: newIcomesState.map((i) => JSON.stringify(i.decription)),
+          amount: newIcomesState.map((i) => JSON.stringify(i.amount)),
+          id: newIcomesState.map((i) => JSON.stringify(i.id)),
         },
       }),
     });
@@ -74,7 +80,7 @@ const Income = (props) => {
     if (!id) {
       return;
     }
-    fetch(`https://fewd-todolist-api.onrender.com/tasks/${id}?api_key=282`, {
+    fetch(`https://fewd-todolist-api.onrender.com/tasks/${id}?api_key=304`, {
       method: "DELETE",
       mode: "cors",
     })
@@ -90,8 +96,6 @@ const Income = (props) => {
   let sum = incomeData.reduce(function (prev, current) {
     return prev + +current.amount;
   }, 0);
-
-  console.log(incomes);
 
   return (
     <div className="income">
@@ -131,7 +135,7 @@ const Income = (props) => {
       <div className="incomeList">
         {incomeList &&
           entryIncluded &&
-          incomes.map((income) => (
+          retrieveIncomeData.map((income) => (
             <IncomeList
               key={income.id}
               description={JSON.parse(income.content).description}
