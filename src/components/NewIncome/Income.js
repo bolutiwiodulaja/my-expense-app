@@ -13,9 +13,7 @@ const Income = (props) => {
   const [entryIncluded, setEntryIncluded] = useState(false);
 
   let arrayAonvertedIncomeData = Object.values(retrieveIncomeData);
-  let incomeData = arrayAonvertedIncomeData.map((i) => {
-    return JSON.parse(i.content);
-  });
+  let incomeData = arrayAonvertedIncomeData;
 
   console.log(incomes);
 
@@ -29,7 +27,13 @@ const Income = (props) => {
         return response.json();
       })
       .then((data) => {
-        setRetrieveIncomeData(data);
+        console.log('retrieveIncome - data:', data);
+        console.log('data.task.content:', data.task.content);
+        console.log('JSON.parse(data.task.content):', JSON.parse(data.task.content));
+
+        const parsedIncomeData = JSON.parse(data.task.content);
+
+        setRetrieveIncomeData(parsedIncomeData);
       });
 
     if (incomes.length >= 0) {
@@ -44,15 +48,16 @@ const Income = (props) => {
       return newIcomesState;
     });
 
-    fetch(`https://fewd-todolist-api.onrender.com/task/4303?api_key=281`, {
-      method: "POST",
+    // POST https://fewd-todolist-api.onrender.com/task - creating a record
+    // GET https://fewd-todolist-api.onrender.com/task - getting all records
+
+    fetch(`https://fewd-todolist-api.onrender.com/tasks/4303?api_key=281`, {
+      method: "PUT",
       mode: "cors",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        content: {
-          description: newIcomesState.map((i) => JSON.stringify(i.decription)),
-          amount: newIcomesState.map((i) => JSON.stringify(i.amount)),
-          id: newIcomesState.map((i) => JSON.stringify(i.id)),
+        task: {
+          content: JSON.stringify(newIcomesState),
         },
       }),
     });
