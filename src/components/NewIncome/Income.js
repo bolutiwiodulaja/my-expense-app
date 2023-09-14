@@ -6,58 +6,61 @@ import "./Income.css";
 import del from "../Img/del-Freepik.png";
 
 const Income = (props) => {
-  const [incomes, setIncomes] = useState([]);
   const [editIncome, setEditIncome] = useState(false);
   const [incomeList, setIncomeList] = useState(false);
   const [retrieveIncomeData, setRetrieveIncomeData] = useState([]);
   const [entryIncluded, setEntryIncluded] = useState(false);
 
-  let arrayAonvertedIncomeData = Object.values(retrieveIncomeData);
-  let incomeData = arrayAonvertedIncomeData;
-
-  console.log(incomes);
-
-  useEffect(() => {
-    retrieveIncome();
-  }, []);
-
   const retrieveIncome = () => {
-    fetch("https://fewd-todolist-api.onrender.com/tasks/4303?api_key=281")
+    fetch("https://fewd-todolist-api.onrender.com/tasks/4340?api_key=282")
       .then((response) => {
         return response.json();
       })
       .then((data) => {
-        console.log('retrieveIncome - data:', data);
-        console.log('data.task.content:', data.task.content);
-        console.log('JSON.parse(data.task.content):', JSON.parse(data.task.content));
+        console.log("retrieveIncome - data:", data);
+        console.log("data.task.content:", data.task.content);
+        console.log(
+          "JSON.parse(data.task.content):",
+          JSON.parse(data.task.content)
+        );
 
         const parsedIncomeData = JSON.parse(data.task.content);
 
         setRetrieveIncomeData(parsedIncomeData);
       });
 
-    if (incomes.length >= 0) {
+    if (retrieveIncomeData.length >= 0) {
       setEntryIncluded(true);
     }
   };
 
+  useEffect(() => {
+    retrieveIncome();
+  }, []);
+
   const addIncome = (e) => {
-    let newIcomesState = [];
-    setIncomes((existingIncomes) => {
-      newIcomesState = [e, ...existingIncomes];
-      return newIcomesState;
-    });
+    let newIncomesState = [];
+    let existingIncomes = [];
+    const existing = () => {
+      existingIncomes = retrieveIncomeData.map((i) => {
+        return i;
+      });
+    };
 
-    // POST https://fewd-todolist-api.onrender.com/task - creating a record
-    // GET https://fewd-todolist-api.onrender.com/task - getting all records
+    if (Array.isArray(retrieveIncomeData) == false) {
+      newIncomesState = [e];
+    } else {
+      existing();
+      newIncomesState = [e, ...existingIncomes];
+    }
 
-    fetch(`https://fewd-todolist-api.onrender.com/tasks/4303?api_key=281`, {
+    fetch(`https://fewd-todolist-api.onrender.com/tasks/4340?api_key=282`, {
       method: "PUT",
       mode: "cors",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         task: {
-          content: JSON.stringify(newIcomesState),
+          content: JSON.stringify(newIncomesState),
         },
       }),
     });
@@ -82,25 +85,26 @@ const Income = (props) => {
   };
 
   const deleteButtonHandler = (id) => {
-    if (!id) {
-      return;
-    }
-    fetch(`https://fewd-todolist-api.onrender.com/tasks/${id}?api_key=304`, {
-      method: "DELETE",
+    const updatedList = retrieveIncomeData.filter((e) => e.id !== id);
+
+    fetch(`https://fewd-todolist-api.onrender.com/tasks/4340?api_key=282`, {
+      method: "PUT",
       mode: "cors",
-    })
-      .then((response) => {
-        response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        retrieveIncome();
-      });
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        task: {
+          content: JSON.stringify(updatedList),
+        },
+      }),
+    });
+    retrieveIncome();
   };
 
-  let sum = incomeData.reduce(function (prev, current) {
+  let incomeSum = retrieveIncomeData.reduce(function (prev, current) {
     return prev + +current.amount;
   }, 0);
+
+  props.incomeTotal(incomeSum);
 
   return (
     <div className="income">
@@ -108,7 +112,7 @@ const Income = (props) => {
         {!incomeList && (
           <p className="incomeTotal">
             {props.currency}
-            {(sum - props.expenseTotal)
+            {(incomeSum - props.expenseTotal)
               .toString()
               .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
           </p>
@@ -126,6 +130,7 @@ const Income = (props) => {
             onStopEdit={stopEditIncomeHandler}
           />
         )}
+
         {!incomeList && !editIncome && (
           <button
             onClick={incomeListHandler}
@@ -133,6 +138,15 @@ const Income = (props) => {
             type="button"
           >
             ˅
+          </button>
+        )}
+        {incomeList && (
+          <button
+            onClick={stopIncomeListHandler}
+            className="minimizeButton"
+            type="button"
+          >
+            ˄
           </button>
         )}
       </div>
@@ -143,9 +157,9 @@ const Income = (props) => {
           retrieveIncomeData.map((income) => (
             <IncomeList
               key={income.id}
-              description={JSON.parse(income.content).description}
+              description={income.description}
               currency={props.currency}
-              amount={JSON.parse(income.content).amount}
+              amount={income.amount}
               bttn={
                 <img
                   src={del}
@@ -158,15 +172,6 @@ const Income = (props) => {
             />
           ))}
       </div>
-      {incomeList && (
-        <button
-          onClick={stopIncomeListHandler}
-          className="minimizeButton"
-          type="button"
-        >
-          ˄
-        </button>
-      )}
     </div>
   );
 };

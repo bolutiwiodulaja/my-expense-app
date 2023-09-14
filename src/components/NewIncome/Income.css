@@ -12,11 +12,7 @@
   margin-bottom: -5px;
 }
 
-.incomeList {
-  overflow: auto;
-max-height: 90px;
 
-}
 
 .minimizeButton{
   background-color: transparent;

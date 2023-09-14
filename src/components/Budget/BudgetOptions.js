@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import "./ExpenseFormElements.css";
+import "./BudgetFormElements.css";
 
-const ExpenseOptions = (props) => {
-  const expenseOption = [
+const BudgetOptions = (props) => {
+  const budgetOption = [
     { value: "food & drink" },
     { value: "home" },
     { value: "utility" },
@@ -20,25 +20,25 @@ const ExpenseOptions = (props) => {
     { value: "other" },
   ];
 
-  const [expense, setExpense] = useState(expenseOption[0].value);
+  const [budget, setBudget] = useState(budgetOption[0].value);
 
-  props.optionsValue(expense);
+  props.optionsValue(budget);
   const onChangeHandler = (e) => {
-    setExpense(e.target.value);
+    setBudget(e.target.value);
   };
   return (
     <div className="offset-2 col-8">
       <select
-        value={expense}
+        value={budget}
         onChange={onChangeHandler}
-        className="selectField inputField w-100"
+        className="budgetInputField w-100"
       >
-        {expenseOption.map((expense) => (
-          <option value={expense.value}>{expense.value}</option>
+        {budgetOption.map((budget) => (
+          <option value={budget.value}>{budget.value}</option>
         ))}
       </select>
     </div>
   );
 };
 
-export default ExpenseOptions;
+export default BudgetOptions;

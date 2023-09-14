@@ -1,5 +1,7 @@
-import ExpenseOptions from "../NewExpense/ExpenseOptions";
+import BudgetOptions from "./BudgetOptions";
 import React, { useState } from "react";
+import "bootstrap/dist/css/bootstrap.css";
+import "./BudgetFormElements.css";
 
 const BudgetForm = (props) => {
   const [budgetAmount, setBudgetAmount] = useState("");
@@ -26,19 +28,30 @@ const BudgetForm = (props) => {
 
     setBudgetAmount("");
     setType("");
+    props.onStopEdit();
   };
 
   return (
     <div>
       <form onSubmit={submitHandler}>
         <input
+          className="incomeInputField"
           placehodler="budget-amount"
           type="number"
           onChange={budgetAmountHandler}
           value={budgetAmount}
+          placeholder="budget amount"
         />
-        <ExpenseOptions optionsValue={typeChangeHandler} />
-        <button type="submit">ADD BUDGET</button>
+        <BudgetOptions optionsValue={typeChangeHandler} />
+
+        <div className="col-8 d-flex offset-md-1">
+          <button type="submit">
+            <span>ADD</span>
+          </button>
+          <button type="button" onClick={props.onStopEdit}>
+            <span>CANCEL</span>
+          </button>
+        </div>
       </form>
     </div>
   );

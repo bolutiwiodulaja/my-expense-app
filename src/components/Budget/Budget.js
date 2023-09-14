@@ -1,8 +1,16 @@
 import BudgetForm from "./BudgetForm";
 import BudgetList from "./BudgetList";
 import React, { useState, useEffect } from "react";
+import "bootstrap/dist/css/bootstrap.css";
+import "./Budget.css";
+import del from "../Img/del-Freepik.png";
 
 const Budget = (props) => {
+  const [retrievedBudgets, setRetrievedBudgets] = useState([]);
+  const declearedBudgets = [];
+  const [budgetList, setBudgetList] = useState(false);
+  const [editBudget, setEditBudget] = useState(false);
+
   let expenseSum = [
     { sum: 0, type: "food & drink" },
     { sum: 0, type: "home" },
@@ -20,26 +28,48 @@ const Budget = (props) => {
     { sum: 0, type: "other" },
   ];
 
+  const incomeSum = props.incomeTotal;
   const expensesList = props.expensesList;
 
   const [budgets, setBudgets] = useState([
-    { id: 1, budget: -1, type: "food & drink" },
-    { id: 2, budget: -1, type: "home" },
-    { id: 3, budget: -1, type: "utility" },
-    { id: 4, budget: -1, type: "living essentials" },
-    { id: 4, budget: -1, type: "debt" },
-    { id: 5, budget: -1, type: "pet cost" },
-    { id: 6, budget: -1, type: "internet" },
-    { id: 7, budget: -1, type: "subscription" },
-    { id: 8, budget: -1, type: "medical/dental" },
-    { id: 9, budget: -1, type: "savings" },
-    { id: 10, budget: -1, type: "investing" },
-    { id: 11, budget: -1, type: "charity" },
-    { id: 12, budget: -1, type: "fun" },
-    { id: 13, budget: -1, type: "other" },
+    { id: 1, budget: null, type: "food & drink" },
+    { id: 2, budget: null, type: "home" },
+    { id: 3, budget: null, type: "utility" },
+    { id: 4, budget: null, type: "living essentials" },
+    { id: 4, budget: null, type: "debt" },
+    { id: 5, budget: null, type: "pet cost" },
+    { id: 6, budget: null, type: "internet" },
+    { id: 7, budget: null, type: "subscription" },
+    { id: 8, budget: null, type: "medical/dental" },
+    { id: 9, budget: null, type: "savings" },
+    { id: 10, budget: null, type: "investing" },
+    { id: 11, budget: null, type: "charity" },
+    { id: 12, budget: null, type: "fun" },
+    { id: 13, budget: null, type: "other" },
   ]);
 
-  /*const [retrievedBudgets, setRetrievedBudgets] = useState([]);*/
+  const retrieveBudgets = () => {
+    fetch("https://fewd-todolist-api.onrender.com/tasks/4342?api_key=282")
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log("retrieveBudget - data:", data);
+        console.log("data.task.content:", data.task.content);
+        console.log(
+          "JSON.parse(data.task.content):",
+          JSON.parse(data.task.content)
+        );
+
+        const parsedBudgetData = JSON.parse(data.task.content);
+
+        setRetrievedBudgets(parsedBudgetData);
+      });
+  };
+
+  useEffect(() => {
+    retrieveBudgets();
+  }, []);
 
   const modifiedBudgets = [
     { id: 1, budget: 0, type: "food & drink" },
@@ -58,21 +88,25 @@ const Budget = (props) => {
     { id: 13, budget: 0, type: "other" },
   ];
 
-  const declearedBudgets = [];
+  const budgetListHandler = () => {
+    setBudgetList(true);
+  };
 
-  /* useEffect(() => {
-    retrieveBudget();
-  }, []);
+  const stopBudgetListHandler = () => {
+    setBudgetList(false);
+  };
 
-  const retrieveBudget = () => {
-    fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=283")
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        setRetrievedBudgets(data.tasks);
-      });
-  };*/
+  const editBudgetHandler = () => {
+    setEditBudget(true);
+  };
+
+  const stopEditBudgetHandler = () => {
+    setEditBudget(false);
+  };
+
+  for (let i = 0; i < budgets.length; i++) {
+    budgets[i].budget = retrievedBudgets[i];
+  }
 
   for (let i = 0; i < expenseSum.length; i++) {
     for (let j = 0; j < expensesList.length; j++) {
@@ -84,52 +118,138 @@ const Budget = (props) => {
       }
     }
   }
-
   const addBudget = (e) => {
     let newBudgetState = [];
+
     {
       setBudgets((existingBudgets) => {
         for (let i = 0; i < budgets.length; i++) {
           if (budgets[i].type === e.type) {
             budgets[i].budget = e.budgetAmount;
             newBudgetState = [...existingBudgets];
+
             return newBudgetState;
           }
         }
       });
     }
-    console.log(newBudgetState);
-    fetch("https://fewd-todolist-api.onrender.com/tasks?api_key=283", {
-      method: "POST",
+
+    let newBudgetStateMap = newBudgetState.map((i) => {
+      return i.budget;
+    });
+
+    fetch("https://fewd-todolist-api.onrender.com/tasks/4342?api_key=282", {
+      method: "PUT",
       mode: "cors",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         task: {
-          content: newBudgetState.map((i) => {
-            JSON.stringify(i);
-          }),
+          content: JSON.stringify(newBudgetStateMap),
         },
       }),
     });
+    retrieveBudgets();
+    console.log(newBudgetState);
+  };
+
+  const deleteButtonHandler = (e) => {
+    const updatedList = retrievedBudgets.map((i) => {
+      return i;
+    });
+
+    updatedList[e] = null;
+
+    fetch(`https://fewd-todolist-api.onrender.com/tasks/4342?api_key=282`, {
+      method: "PUT",
+      mode: "cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        task: {
+          content: JSON.stringify(updatedList),
+        },
+      }),
+    });
+    retrieveBudgets();
   };
 
   for (let i = 0; i < budgets.length; i++) {
     modifiedBudgets[i].budget = budgets[i].budget - expenseSum[i].sum;
-    if (modifiedBudgets[i].budget > -1) {
+    if (budgets[i].budget !== null) {
       declearedBudgets.push(modifiedBudgets[i]);
     }
   }
 
+  const modifiedBudgetsSum = modifiedBudgets.reduce(function (prev, current) {
+    return prev + +current.budget;
+  }, 0);
+
+  console.log(modifiedBudgetsSum);
+
   return (
-    <div>
-      <BudgetForm onBudgetInfoInput={addBudget} expensesList={expensesList} />
-      {declearedBudgets &&
+    <div className="budget">
+      <div className="d-flex justify-content-end">
+        {
+          <p>
+            Allocable Income Remaining: {props.currency}
+            {(incomeSum - modifiedBudgetsSum)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+          </p>
+        }
+      </div>
+      <div className="d-flex justify-content-end">
+        {!editBudget && !budgetList && (
+          <button onClick={editBudgetHandler}>
+            <span>ADD BUDGET</span>
+          </button>
+        )}
+        {editBudget && (
+          <BudgetForm
+            onBudgetInfoInput={addBudget}
+            expensesList={expensesList}
+            onStopEdit={stopEditBudgetHandler}
+          />
+        )}
+
+        {!budgetList && !editBudget && (
+          <button
+            onClick={budgetListHandler}
+            className="minimizeButton"
+            type="button"
+          >
+            ˅
+          </button>
+        )}
+        {budgetList && (
+          <button
+            onClick={stopBudgetListHandler}
+            className="minimizeButton"
+            type="button"
+          >
+            ˄
+          </button>
+        )}
+      </div>
+
+      {budgetList &&
+        declearedBudgets &&
         declearedBudgets.map((declearedBudget) => (
           <BudgetList
             key={declearedBudget.id}
             type={declearedBudget.type}
             currency={props.currency}
             amount={declearedBudget.budget}
+            bttn={
+              <img
+                src={del}
+                type="button"
+                onClick={() =>
+                  deleteButtonHandler(modifiedBudgets.indexOf(declearedBudget))
+                }
+                className="icons"
+                alt="delete icon"
+              />
+            }
           />
         ))}
     </div>

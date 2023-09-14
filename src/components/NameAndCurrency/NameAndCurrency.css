@@ -28,3 +28,7 @@
   background-color: rgb(166, 245, 166);
   margin-bottom: 5px;
 }
+.appDescription {
+  color: white;
+  font-size: 15px;
+}

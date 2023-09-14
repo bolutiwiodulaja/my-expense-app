@@ -1,11 +1,34 @@
 import ExpenseForm from "./ExpenseForm";
 import ExpenseList from "./ExpenseList";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Expense.css";
 import del from "../Img/del-Freepik.png";
 const Expense = (props) => {
   const [editExpenses, setEditExpenses] = useState(false);
   const [expenses, setExpenses] = useState([]);
+
+  useEffect(() => {
+    retrieveExpenses();
+  }, []);
+
+  const retrieveExpenses = () => {
+    fetch("https://fewd-todolist-api.onrender.com/tasks/4341?api_key=282")
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log("retrieveIncome - data:", data);
+        console.log("data.task.content:", data.task.content);
+        console.log(
+          "JSON.parse(data.task.content):",
+          JSON.parse(data.task.content)
+        );
+
+        const parsedExpenseData = JSON.parse(data.task.content);
+
+        setExpenses(parsedExpenseData);
+      });
+  };
 
   const onEditExpenseHanlder = () => {
     setEditExpenses(true);
@@ -16,23 +39,59 @@ const Expense = (props) => {
   };
 
   const addExpense = (e) => {
-    setExpenses((existingExpenses) => {
-      return [e, ...existingExpenses];
+    let newExpensesState = [];
+    let existingExpenses = [];
+    const existing = () => {
+      existingExpenses = expenses.map((i) => {
+        return i;
+      });
+    };
+
+    if (Array.isArray(expenses) == false) {
+      newExpensesState = [e];
+    } else {
+      existing();
+      newExpensesState = [e, ...existingExpenses];
+    }
+
+    fetch(`https://fewd-todolist-api.onrender.com/tasks/4341?api_key=282`, {
+      method: "PUT",
+      mode: "cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        task: {
+          content: JSON.stringify(newExpensesState),
+        },
+      }),
     });
+
+    retrieveExpenses();
     onStopEditHandler();
   };
 
   const deleteButtonHandler = (id) => {
     const updatedList = expenses.filter((e) => e.id !== id);
-    setExpenses(updatedList);
+    fetch(`https://fewd-todolist-api.onrender.com/tasks/4341?api_key=282`, {
+      method: "PUT",
+      mode: "cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        task: {
+          content: JSON.stringify(updatedList),
+        },
+      }),
+    });
+    retrieveExpenses();
   };
 
-  let sum = expenses.reduce(function (prev, current) {
+  let expenseSum = expenses.reduce(function (prev, current) {
     return prev + +current.expenseAmount;
   }, 0);
 
   props.expensesList(expenses);
-  props.expenseTotal(sum);
+  props.expenseTotal(expenseSum);
+
+  console.log(expenses);
 
   return (
     <div className="expense">
