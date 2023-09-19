@@ -3,7 +3,7 @@ const Title = (props) => {
   return (
     <div className="container title">
       <div className="row">
-        <div className="d-flex justify-content-start offset-1">
+        <div className="d-flex justify-content-start">
           <p>{props.userName}'s Budget</p>
         </div>
       </div>

@@ -118,6 +118,16 @@ const Budget = (props) => {
       }
     }
   }
+
+  const declearedBudgetHandler = () => {
+    for (let i = 0; i < budgets.length; i++) {
+      modifiedBudgets[i].budget = budgets[i].budget - expenseSum[i].sum;
+      if (budgets[i].budget !== null) {
+        declearedBudgets.push(modifiedBudgets[i]);
+      }
+    }
+  };
+
   const addBudget = (e) => {
     let newBudgetState = [];
 
@@ -169,17 +179,13 @@ const Budget = (props) => {
         },
       }),
     });
+    declearedBudgetHandler();
     retrieveBudgets();
   };
 
-  for (let i = 0; i < budgets.length; i++) {
-    modifiedBudgets[i].budget = budgets[i].budget - expenseSum[i].sum;
-    if (budgets[i].budget !== null) {
-      declearedBudgets.push(modifiedBudgets[i]);
-    }
-  }
+  declearedBudgetHandler();
 
-  const modifiedBudgetsSum = modifiedBudgets.reduce(function (prev, current) {
+  const modifiedBudgetsSum = budgets.reduce(function (prev, current) {
     return prev + +current.budget;
   }, 0);
 
@@ -197,40 +203,6 @@ const Budget = (props) => {
           </p>
         }
       </div>
-      <div className="d-flex justify-content-end">
-        {!editBudget && !budgetList && (
-          <button onClick={editBudgetHandler}>
-            <span>ADD BUDGET</span>
-          </button>
-        )}
-        {editBudget && (
-          <BudgetForm
-            onBudgetInfoInput={addBudget}
-            expensesList={expensesList}
-            onStopEdit={stopEditBudgetHandler}
-          />
-        )}
-
-        {!budgetList && !editBudget && (
-          <button
-            onClick={budgetListHandler}
-            className="minimizeButton"
-            type="button"
-          >
-            ˅
-          </button>
-        )}
-        {budgetList && (
-          <button
-            onClick={stopBudgetListHandler}
-            className="minimizeButton"
-            type="button"
-          >
-            ˄
-          </button>
-        )}
-      </div>
-
       {budgetList &&
         declearedBudgets &&
         declearedBudgets.map((declearedBudget) => (
@@ -252,6 +224,40 @@ const Budget = (props) => {
             }
           />
         ))}
+      <div className="d-flex flex-column justify-content-end">
+        {!editBudget && !budgetList && (
+          <button onClick={editBudgetHandler}>
+            <span>ADD BUDGET</span>
+          </button>
+        )}
+        {editBudget && (
+          <BudgetForm
+            onBudgetInfoInput={addBudget}
+            expensesList={expensesList}
+            onStopEdit={stopEditBudgetHandler}
+          />
+        )}
+
+        {!budgetList && !editBudget && (
+          <button
+            onClick={budgetListHandler}
+            className="minimizeButton"
+            type="button"
+          >
+            <p>show budget ˅</p>
+          </button>
+        )}
+
+        {budgetList && (
+          <button
+            onClick={stopBudgetListHandler}
+            className="minimizeButton"
+            type="button"
+          >
+            <p>hide budget ˄</p>
+          </button>
+        )}
+      </div>
     </div>
   );
 };

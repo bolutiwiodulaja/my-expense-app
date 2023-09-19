@@ -18,7 +18,7 @@ const Header = (props) => {
     <div className="container-fluid totalIncomeContainer">
       <div className="row">
         <div className="mainHeader d-flex">
-          <div className="col-6">
+          <div className="col-6 incomegrp">
             <Title className="title" userName={props.userName} />
             <Income
               expenseTotal={expense}
@@ -26,7 +26,7 @@ const Header = (props) => {
               incomeTotal={incomeTotalHandler}
             />
           </div>
-          <div className="col-6">
+          <div className="col-6 budgetgrp">
             <Budget
               expensesList={expensesList}
               currency={props.currency}

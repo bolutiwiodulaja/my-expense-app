@@ -11,6 +11,10 @@ const Income = (props) => {
   const [retrieveIncomeData, setRetrieveIncomeData] = useState([]);
   const [entryIncluded, setEntryIncluded] = useState(false);
 
+  useEffect(() => {
+    retrieveIncome();
+  }, []);
+
   const retrieveIncome = () => {
     fetch("https://fewd-todolist-api.onrender.com/tasks/4340?api_key=282")
       .then((response) => {
@@ -34,10 +38,6 @@ const Income = (props) => {
     }
   };
 
-  useEffect(() => {
-    retrieveIncome();
-  }, []);
-
   const addIncome = (e) => {
     let newIncomesState = [];
     let existingIncomes = [];
@@ -47,11 +47,11 @@ const Income = (props) => {
       });
     };
 
-    if (Array.isArray(retrieveIncomeData) == false) {
-      newIncomesState = [e];
-    } else {
+    if (Array.isArray(retrieveIncomeData) !== false) {
       existing();
       newIncomesState = [e, ...existingIncomes];
+    } else {
+      newIncomesState = [e];
     }
 
     fetch(`https://fewd-todolist-api.onrender.com/tasks/4340?api_key=282`, {
@@ -108,7 +108,7 @@ const Income = (props) => {
 
   return (
     <div className="income">
-      <div className="d-flex justify-content-start offset-1">
+      <div className="d-flex justify-content-start">
         {!incomeList && (
           <p className="incomeTotal">
             {props.currency}
@@ -116,38 +116,6 @@ const Income = (props) => {
               .toString()
               .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
           </p>
-        )}
-      </div>
-      <div className="d-flex justify-content-start offset-md-1">
-        {!editIncome && !incomeList && (
-          <button onClick={editIncomeHandler}>
-            <span>ADD INCOME</span>
-          </button>
-        )}
-        {editIncome && (
-          <IncomeForm
-            onIncomeInfoInput={addIncome}
-            onStopEdit={stopEditIncomeHandler}
-          />
-        )}
-
-        {!incomeList && !editIncome && (
-          <button
-            onClick={incomeListHandler}
-            className="minimizeButton"
-            type="button"
-          >
-            ˅
-          </button>
-        )}
-        {incomeList && (
-          <button
-            onClick={stopIncomeListHandler}
-            className="minimizeButton"
-            type="button"
-          >
-            ˄
-          </button>
         )}
       </div>
       {incomeList && !entryIncluded && <p>You have not included any income</p>}
@@ -171,6 +139,38 @@ const Income = (props) => {
               }
             />
           ))}
+      </div>
+      <div className="d-flex flex-column justify-content-start ">
+        {!editIncome && !incomeList && (
+          <button onClick={editIncomeHandler}>
+            <span>ADD INCOME</span>
+          </button>
+        )}
+        {editIncome && (
+          <IncomeForm
+            onIncomeInfoInput={addIncome}
+            onStopEdit={stopEditIncomeHandler}
+          />
+        )}
+
+        {!incomeList && !editIncome && (
+          <button
+            onClick={incomeListHandler}
+            className="minimizeButton"
+            type="button"
+          >
+            <p>show income ˅</p>
+          </button>
+        )}
+        {incomeList && (
+          <button
+            onClick={stopIncomeListHandler}
+            className="minimizeButton"
+            type="button"
+          >
+            <p>hide income ˄</p>
+          </button>
+        )}
       </div>
     </div>
   );

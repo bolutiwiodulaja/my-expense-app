@@ -7,10 +7,6 @@ const Expense = (props) => {
   const [editExpenses, setEditExpenses] = useState(false);
   const [expenses, setExpenses] = useState([]);
 
-  useEffect(() => {
-    retrieveExpenses();
-  }, []);
-
   const retrieveExpenses = () => {
     fetch("https://fewd-todolist-api.onrender.com/tasks/4341?api_key=282")
       .then((response) => {
@@ -30,6 +26,10 @@ const Expense = (props) => {
       });
   };
 
+  useEffect(() => {
+    retrieveExpenses();
+  }, []);
+
   const onEditExpenseHanlder = () => {
     setEditExpenses(true);
   };
@@ -47,11 +47,11 @@ const Expense = (props) => {
       });
     };
 
-    if (Array.isArray(expenses) == false) {
-      newExpensesState = [e];
-    } else {
+    if (Array.isArray(expenses) !== false) {
       existing();
       newExpensesState = [e, ...existingExpenses];
+    } else {
+      newExpensesState = [e];
     }
 
     fetch(`https://fewd-todolist-api.onrender.com/tasks/4341?api_key=282`, {

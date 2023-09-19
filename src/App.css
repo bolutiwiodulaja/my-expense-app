@@ -34,3 +34,9 @@ button span {
 button:hover {
 background: #55b4da;
 }
+
+
+.minimizeButton{
+  background-color: transparent;
+  color: grey;
+}
