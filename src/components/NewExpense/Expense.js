@@ -26,10 +26,6 @@ const Expense = (props) => {
       });
   };
 
-  useEffect(() => {
-    retrieveExpenses();
-  }, []);
-
   const onEditExpenseHanlder = () => {
     setEditExpenses(true);
   };
@@ -63,9 +59,8 @@ const Expense = (props) => {
           content: JSON.stringify(newExpensesState),
         },
       }),
-    });
+    }).then(retrieveExpenses);
 
-    retrieveExpenses();
     onStopEditHandler();
   };
 
@@ -80,8 +75,7 @@ const Expense = (props) => {
           content: JSON.stringify(updatedList),
         },
       }),
-    });
-    retrieveExpenses();
+    }).then(retrieveExpenses);
   };
 
   let expenseSum = expenses.reduce(function (prev, current) {
@@ -92,6 +86,10 @@ const Expense = (props) => {
   props.expenseTotal(expenseSum);
 
   console.log(expenses);
+
+  useEffect(() => {
+    retrieveExpenses();
+  }, []);
 
   return (
     <div className="expense">

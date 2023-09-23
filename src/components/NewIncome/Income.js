@@ -11,10 +11,6 @@ const Income = (props) => {
   const [retrieveIncomeData, setRetrieveIncomeData] = useState([]);
   const [entryIncluded, setEntryIncluded] = useState(false);
 
-  useEffect(() => {
-    retrieveIncome();
-  }, []);
-
   const retrieveIncome = () => {
     fetch("https://fewd-todolist-api.onrender.com/tasks/4340?api_key=282")
       .then((response) => {
@@ -63,9 +59,7 @@ const Income = (props) => {
           content: JSON.stringify(newIncomesState),
         },
       }),
-    });
-
-    retrieveIncome();
+    }).then(retrieveIncome);
   };
 
   const editIncomeHandler = () => {
@@ -96,8 +90,7 @@ const Income = (props) => {
           content: JSON.stringify(updatedList),
         },
       }),
-    });
-    retrieveIncome();
+    }).then(retrieveIncome);
   };
 
   let incomeSum = retrieveIncomeData.reduce(function (prev, current) {
@@ -105,6 +98,10 @@ const Income = (props) => {
   }, 0);
 
   props.incomeTotal(incomeSum);
+
+  useEffect(() => {
+    retrieveIncome();
+  }, []);
 
   return (
     <div className="income">

@@ -67,10 +67,6 @@ const Budget = (props) => {
       });
   };
 
-  useEffect(() => {
-    retrieveBudgets();
-  }, []);
-
   const modifiedBudgets = [
     { id: 1, budget: 0, type: "food & drink" },
     { id: 2, budget: 0, type: "home" },
@@ -157,8 +153,8 @@ const Budget = (props) => {
           content: JSON.stringify(newBudgetStateMap),
         },
       }),
-    });
-    retrieveBudgets();
+    }).then(retrieveBudgets);
+
     console.log(newBudgetState);
   };
 
@@ -178,9 +174,7 @@ const Budget = (props) => {
           content: JSON.stringify(updatedList),
         },
       }),
-    });
-    declearedBudgetHandler();
-    retrieveBudgets();
+    }).then(retrieveBudgets);
   };
 
   declearedBudgetHandler();
@@ -190,6 +184,10 @@ const Budget = (props) => {
   }, 0);
 
   console.log(modifiedBudgetsSum);
+
+  useEffect(() => {
+    retrieveBudgets();
+  }, []);
 
   return (
     <div className="budget">
