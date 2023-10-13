@@ -9,21 +9,23 @@ const Header = (props) => {
   const [incomeTotal, setIncomeTotal] = useState("");
   const expense = props.totalExpenseCost;
   const expensesList = props.expensesList;
+  const userKey = props.userKey;
 
   const incomeTotalHandler = (e) => {
     setIncomeTotal(e);
   };
-
+  console.log(expensesList);
   return (
     <div className="container-fluid totalIncomeContainer">
       <div className="row">
         <div className="mainHeader d-flex">
           <div className="col-6 incomegrp">
-            <Title className="title" userName={props.userName} />
+            <Title className="title" username={props.username} />
             <Income
               expenseTotal={expense}
               currency={props.currency}
               incomeTotal={incomeTotalHandler}
+              userKey={userKey}
             />
           </div>
           <div className="col-6 budgetgrp">
@@ -31,6 +33,7 @@ const Header = (props) => {
               expensesList={expensesList}
               currency={props.currency}
               incomeTotal={incomeTotal}
+              userKey={userKey}
             />
           </div>
         </div>

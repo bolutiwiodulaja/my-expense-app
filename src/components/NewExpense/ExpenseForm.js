@@ -10,6 +10,7 @@ const ExpenseForm = (props) => {
   const [type, setType] = useState("");
   const [date, setDate] = useState("");
   const [note, setNote] = useState("");
+  const pretext = "exp-";
 
   let formattedDate = moment(date).format("DD-MMM-YYYY");
 
@@ -34,6 +35,7 @@ const ExpenseForm = (props) => {
     e.preventDefault();
 
     const expenseInfo = {
+      pretext: pretext,
       expenseAmount: expenseAmount,
       type: type,
       date: formattedDate,

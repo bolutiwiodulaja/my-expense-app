@@ -21,6 +21,7 @@ const Body = (props) => {
 
   const [total, setTotal] = useState("");
   const [expensesList, setExpensesList] = useState("");
+  const userKey = props.userKey;
 
   const current = new Date();
 
@@ -55,6 +56,8 @@ const Body = (props) => {
               expenseTotal={expenseTotalHandler}
               expensesList={expensesListHandler}
               currency={props.currency}
+              userKey={userKey}
+              logout={props.logout}
             />
           </div>
         </div>

@@ -6,10 +6,13 @@ import "./Budget.css";
 import del from "../Img/del-Freepik.png";
 
 const Budget = (props) => {
+  const [retrievedData, setRetrievedData] = useState([]);
   const [retrievedBudgets, setRetrievedBudgets] = useState([]);
   const declearedBudgets = [];
+  const summedNumbers = [];
   const [budgetList, setBudgetList] = useState(false);
   const [editBudget, setEditBudget] = useState(false);
+  const userKey = props.userKey;
 
   let expenseSum = [
     { sum: 0, type: "food & drink" },
@@ -32,6 +35,7 @@ const Budget = (props) => {
   const expensesList = props.expensesList;
 
   const [budgets, setBudgets] = useState([
+    { budget: "budget-" },
     { id: 1, budget: null, type: "food & drink" },
     { id: 2, budget: null, type: "home" },
     { id: 3, budget: null, type: "utility" },
@@ -48,24 +52,90 @@ const Budget = (props) => {
     { id: 13, budget: null, type: "other" },
   ]);
 
+  let userTaskID;
+
+  const budgetHandler = () => {
+    retrievedData.map((i) => {
+      if (i.content.includes("budget-")) {
+        return (userTaskID = i.id);
+      }
+    });
+  };
+
   const retrieveBudgets = () => {
-    fetch("https://fewd-todolist-api.onrender.com/tasks/4342?api_key=282")
+    fetch(
+      `https://fewd-todolist-api.onrender.com/tasks/${userTaskID}?api_key=${userKey}`
+    )
       .then((response) => {
         return response.json();
       })
       .then((data) => {
-        console.log("retrieveBudget - data:", data);
-        console.log("data.task.content:", data.task.content);
-        console.log(
-          "JSON.parse(data.task.content):",
-          JSON.parse(data.task.content)
-        );
-
         const parsedBudgetData = JSON.parse(data.task.content);
 
         setRetrievedBudgets(parsedBudgetData);
       });
   };
+
+  const initializeBudget = () => {
+    fetch(
+      `https://fewd-todolist-api.onrender.com/tasks/${userTaskID}?api_key=${userKey}`,
+      {
+        method: "PUT",
+        mode: "cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          task: {
+            content: JSON.stringify([
+              "budget-",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+            ]),
+          },
+        }),
+      }
+    ).then(retrieveBudgets);
+  };
+  console.log(userKey);
+  const retrieveData = () => {
+    fetch(`https://fewd-todolist-api.onrender.com/tasks?api_key=${userKey}`)
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setRetrievedData(data.tasks);
+      });
+  };
+
+  useEffect(() => {
+    retrieveData();
+  }, []);
+
+  budgetHandler();
+
+  useEffect(() => {
+    if (userTaskID) {
+      if (retrievedBudgets.length < 13) {
+        initializeBudget();
+      } else {
+        retrieveBudgets();
+      }
+    }
+  }, [userTaskID]);
+
+  console.log(retrievedBudgets);
+  console.log(userTaskID);
 
   const modifiedBudgets = [
     { id: 1, budget: 0, type: "food & drink" },
@@ -100,7 +170,7 @@ const Budget = (props) => {
     setEditBudget(false);
   };
 
-  for (let i = 0; i < budgets.length; i++) {
+  for (let i = 1; i < budgets.length; i++) {
     budgets[i].budget = retrievedBudgets[i];
   }
 
@@ -110,16 +180,15 @@ const Budget = (props) => {
         expenseSum[i].sum = expenseSum.reduce(function () {
           return expenseSum[i].sum + +expensesList[j].expenseAmount;
         }, 0);
-        console.log(expenseSum);
       }
     }
   }
 
   const declearedBudgetHandler = () => {
-    for (let i = 0; i < budgets.length; i++) {
-      modifiedBudgets[i].budget = budgets[i].budget - expenseSum[i].sum;
+    for (let i = 1; i < budgets.length; i++) {
+      modifiedBudgets[i - 1].budget = budgets[i].budget - expenseSum[i - 1].sum;
       if (budgets[i].budget !== null) {
-        declearedBudgets.push(modifiedBudgets[i]);
+        declearedBudgets.push(modifiedBudgets[i - 1]);
       }
     }
   };
@@ -129,7 +198,7 @@ const Budget = (props) => {
 
     {
       setBudgets((existingBudgets) => {
-        for (let i = 0; i < budgets.length; i++) {
+        for (let i = 1; i < budgets.length; i++) {
           if (budgets[i].type === e.type) {
             budgets[i].budget = e.budgetAmount;
             newBudgetState = [...existingBudgets];
@@ -144,18 +213,21 @@ const Budget = (props) => {
       return i.budget;
     });
 
-    fetch("https://fewd-todolist-api.onrender.com/tasks/4342?api_key=282", {
-      method: "PUT",
-      mode: "cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        task: {
-          content: JSON.stringify(newBudgetStateMap),
-        },
-      }),
-    }).then(retrieveBudgets);
-
-    console.log(newBudgetState);
+    if (userTaskID) {
+      fetch(
+        `https://fewd-todolist-api.onrender.com/tasks/${userTaskID}?api_key=${userKey}`,
+        {
+          method: "PUT",
+          mode: "cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            task: {
+              content: JSON.stringify(newBudgetStateMap),
+            },
+          }),
+        }
+      ).then(retrieveBudgets);
+    }
   };
 
   const deleteButtonHandler = (e) => {
@@ -165,29 +237,30 @@ const Budget = (props) => {
 
     updatedList[e] = null;
 
-    fetch(`https://fewd-todolist-api.onrender.com/tasks/4342?api_key=282`, {
-      method: "PUT",
-      mode: "cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        task: {
-          content: JSON.stringify(updatedList),
-        },
-      }),
-    }).then(retrieveBudgets);
+    fetch(
+      `https://fewd-todolist-api.onrender.com/tasks/${userTaskID}?api_key=${userKey}`,
+      {
+        method: "PUT",
+        mode: "cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          task: {
+            content: JSON.stringify(updatedList),
+          },
+        }),
+      }
+    ).then(retrieveBudgets);
   };
 
   declearedBudgetHandler();
 
-  const modifiedBudgetsSum = budgets.reduce(function (prev, current) {
+  for (let i = 1; i < budgets.length; i++) {
+    summedNumbers.push(budgets[i]);
+  }
+
+  const modifiedBudgetsSum = summedNumbers.reduce(function (prev, current) {
     return prev + +current.budget;
   }, 0);
-
-  console.log(modifiedBudgetsSum);
-
-  useEffect(() => {
-    retrieveBudgets();
-  }, []);
 
   return (
     <div className="budget">
@@ -214,7 +287,9 @@ const Budget = (props) => {
                 src={del}
                 type="button"
                 onClick={() =>
-                  deleteButtonHandler(modifiedBudgets.indexOf(declearedBudget))
+                  deleteButtonHandler(
+                    modifiedBudgets.indexOf(declearedBudget) + 1
+                  )
                 }
                 className="icons"
                 alt="delete icon"

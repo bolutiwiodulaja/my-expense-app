@@ -4,7 +4,7 @@ const Title = (props) => {
     <div className="container title">
       <div className="row">
         <div className="d-flex justify-content-start">
-          <p>{props.userName}'s Budget</p>
+          <p>{props.username}'s Budget</p>
         </div>
       </div>
     </div>

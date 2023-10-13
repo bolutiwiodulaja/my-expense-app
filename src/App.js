@@ -23,22 +23,25 @@ const App = (props) => {
     setNameAndCurrencyInfo(e);
     setNameAndCurrency(true);
   };
-
+  console.log(nameAndCurrencyInfo);
   return (
     <div className="App">
-      {!nameAndCurrency && <NameAndCurrency onSubmitInfo={routeToExpenseApp} />}
+      {!nameAndCurrency && <NameAndCurrency onLoginInfo={routeToExpenseApp} />}
       {nameAndCurrency && (
         <header className="App-header">
           <Header
             totalExpenseCost={expenseTotalCost}
             currency={nameAndCurrencyInfo.selectedCurrency}
-            userName={nameAndCurrencyInfo.userName}
+            username={nameAndCurrencyInfo.username}
             expensesList={expensesList}
+            userKey={nameAndCurrencyInfo.userKey}
           />
           <Body
             totalExpenseCost={totalExpenseCostHandler}
             currency={nameAndCurrencyInfo.selectedCurrency}
             expensesList={expensesListHandler}
+            userKey={nameAndCurrencyInfo.userKey}
+            logout={setNameAndCurrency}
           />
         </header>
       )}

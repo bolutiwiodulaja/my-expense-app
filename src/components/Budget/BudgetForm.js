@@ -44,7 +44,7 @@ const BudgetForm = (props) => {
         />
         <BudgetOptions optionsValue={typeChangeHandler} />
 
-        <div className="col-8 d-flex offset-md-1">
+        <div className="col-8 d-flex offset-md-2">
           <button type="submit">
             <span>ADD</span>
           </button>

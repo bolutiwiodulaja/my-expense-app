@@ -4,27 +4,36 @@ import React, { useState, useEffect } from "react";
 import "./Expense.css";
 import del from "../Img/del-Freepik.png";
 const Expense = (props) => {
+  const [retrievedData, setRetrievedData] = useState([]);
   const [editExpenses, setEditExpenses] = useState(false);
-  const [expenses, setExpenses] = useState([]);
+  let expenses = [];
 
-  const retrieveExpenses = () => {
-    fetch("https://fewd-todolist-api.onrender.com/tasks/4341?api_key=282")
+  const userKey = props.userKey;
+
+  const expenseHandler = () => {
+    retrievedData.map((i) => {
+      if (i.content.includes("exp")) {
+        console.log(JSON.parse(i.content));
+        return expenses.push(i);
+      }
+    });
+  };
+
+  const retrieveData = () => {
+    fetch(`https://fewd-todolist-api.onrender.com/tasks?api_key=${userKey}`)
       .then((response) => {
         return response.json();
       })
       .then((data) => {
-        console.log("retrieveIncome - data:", data);
-        console.log("data.task.content:", data.task.content);
-        console.log(
-          "JSON.parse(data.task.content):",
-          JSON.parse(data.task.content)
-        );
-
-        const parsedExpenseData = JSON.parse(data.task.content);
-
-        setExpenses(parsedExpenseData);
+        setRetrievedData(data.tasks);
       });
   };
+
+  useEffect(() => {
+    retrieveData();
+  }, []);
+
+  expenseHandler();
 
   const onEditExpenseHanlder = () => {
     setEditExpenses(true);
@@ -35,61 +44,61 @@ const Expense = (props) => {
   };
 
   const addExpense = (e) => {
-    let newExpensesState = [];
-    let existingExpenses = [];
-    const existing = () => {
-      existingExpenses = expenses.map((i) => {
-        return i;
-      });
-    };
+    let newExpensesState = [e];
 
-    if (Array.isArray(expenses) !== false) {
-      existing();
-      newExpensesState = [e, ...existingExpenses];
-    } else {
-      newExpensesState = [e];
-    }
-
-    fetch(`https://fewd-todolist-api.onrender.com/tasks/4341?api_key=282`, {
-      method: "PUT",
+    fetch(`https://fewd-todolist-api.onrender.com/tasks?api_key=${userKey}`, {
+      method: "POST",
       mode: "cors",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         task: {
-          content: JSON.stringify(newExpensesState),
+          content: newExpensesState.map((i) => JSON.stringify(i)).join("<=>"),
         },
       }),
-    }).then(retrieveExpenses);
+    }).then(retrieveData);
 
     onStopEditHandler();
   };
 
   const deleteButtonHandler = (id) => {
-    const updatedList = expenses.filter((e) => e.id !== id);
-    fetch(`https://fewd-todolist-api.onrender.com/tasks/4341?api_key=282`, {
-      method: "PUT",
-      mode: "cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        task: {
-          content: JSON.stringify(updatedList),
-        },
-      }),
-    }).then(retrieveExpenses);
+    if (!id) {
+      return;
+    }
+    fetch(
+      `https://fewd-todolist-api.onrender.com/tasks/${id}?api_key=${userKey}`,
+      {
+        method: "DELETE",
+        mode: "cors",
+      }
+    )
+      .then((response) => {
+        response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        retrieveData();
+      });
   };
 
-  let expenseSum = expenses.reduce(function (prev, current) {
+  const parsedExpenses = expenses.map((i) => {
+    return JSON.parse(i.content);
+  });
+
+  useEffect(() => {
+    if (expenses) {
+      props.expensesList(parsedExpenses);
+    }
+  }, [retrievedData]);
+
+  let expenseSum = parsedExpenses.reduce(function (prev, current) {
     return prev + +current.expenseAmount;
   }, 0);
 
-  props.expensesList(expenses);
+  const logUserOut = () => {
+    props.logout(false);
+  };
+
   props.expenseTotal(expenseSum);
-
-  console.log(expenses);
-
-  useEffect(() => {
-    retrieveExpenses();
-  }, []);
 
   return (
     <div className="expense">
@@ -101,13 +110,14 @@ const Expense = (props) => {
 
       <div className="expenseList">
         {!editExpenses &&
+          expenses &&
           expenses.map((expense) => (
             <ExpenseList
               key={expense.id}
-              type={expense.type}
-              expenseAmount={expense.expenseAmount}
-              date={expense.date}
-              note={expense.note}
+              type={JSON.parse(expense.content).type}
+              expenseAmount={JSON.parse(expense.content).expenseAmount}
+              date={JSON.parse(expense.content).date}
+              note={JSON.parse(expense.content).note}
               currency={props.currency}
               bttn={
                 <img
@@ -130,6 +140,12 @@ const Expense = (props) => {
           <span>Cancel</span>
         </button>
       )}
+      <button
+        onClick={logUserOut}
+        class="position-absolute bottom-0 start-50 translate-middle-x"
+      >
+        LOGOUT
+      </button>
     </div>
   );
 };

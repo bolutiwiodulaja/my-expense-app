@@ -6,60 +6,49 @@ import "./Income.css";
 import del from "../Img/del-Freepik.png";
 
 const Income = (props) => {
+  const [retrievedData, setRetrievedData] = useState([]);
   const [editIncome, setEditIncome] = useState(false);
   const [incomeList, setIncomeList] = useState(false);
-  const [retrieveIncomeData, setRetrieveIncomeData] = useState([]);
-  const [entryIncluded, setEntryIncluded] = useState(false);
+  let incomes = [];
+  const userKey = props.userKey;
 
-  const retrieveIncome = () => {
-    fetch("https://fewd-todolist-api.onrender.com/tasks/4340?api_key=282")
+  const incomeHandler = () => {
+    retrievedData.map((i) => {
+      if (i.content.includes("income")) {
+        return incomes.push(i);
+      }
+    });
+  };
+
+  const retrieveData = () => {
+    fetch(`https://fewd-todolist-api.onrender.com/tasks?api_key=${userKey}`)
       .then((response) => {
         return response.json();
       })
       .then((data) => {
-        console.log("retrieveIncome - data:", data);
-        console.log("data.task.content:", data.task.content);
-        console.log(
-          "JSON.parse(data.task.content):",
-          JSON.parse(data.task.content)
-        );
-
-        const parsedIncomeData = JSON.parse(data.task.content);
-
-        setRetrieveIncomeData(parsedIncomeData);
+        setRetrievedData(data.tasks);
       });
-
-    if (retrieveIncomeData.length >= 0) {
-      setEntryIncluded(true);
-    }
   };
 
+  useEffect(() => {
+    retrieveData();
+  }, []);
+
+  incomeHandler();
+
   const addIncome = (e) => {
-    let newIncomesState = [];
-    let existingIncomes = [];
-    const existing = () => {
-      existingIncomes = retrieveIncomeData.map((i) => {
-        return i;
-      });
-    };
+    let newIncomesState = [e];
 
-    if (Array.isArray(retrieveIncomeData) !== false) {
-      existing();
-      newIncomesState = [e, ...existingIncomes];
-    } else {
-      newIncomesState = [e];
-    }
-
-    fetch(`https://fewd-todolist-api.onrender.com/tasks/4340?api_key=282`, {
-      method: "PUT",
+    fetch(`https://fewd-todolist-api.onrender.com/tasks?api_key=${userKey}`, {
+      method: "POST",
       mode: "cors",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         task: {
-          content: JSON.stringify(newIncomesState),
+          content: newIncomesState.map((i) => JSON.stringify(i)).join("<=>"),
         },
       }),
-    }).then(retrieveIncome);
+    }).then(retrieveData);
   };
 
   const editIncomeHandler = () => {
@@ -79,29 +68,34 @@ const Income = (props) => {
   };
 
   const deleteButtonHandler = (id) => {
-    const updatedList = retrieveIncomeData.filter((e) => e.id !== id);
-
-    fetch(`https://fewd-todolist-api.onrender.com/tasks/4340?api_key=282`, {
-      method: "PUT",
-      mode: "cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        task: {
-          content: JSON.stringify(updatedList),
-        },
-      }),
-    }).then(retrieveIncome);
+    if (!id) {
+      return;
+    }
+    fetch(
+      `https://fewd-todolist-api.onrender.com/tasks/${id}?api_key=${userKey}`,
+      {
+        method: "DELETE",
+        mode: "cors",
+      }
+    )
+      .then((response) => {
+        response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        retrieveData();
+      });
   };
 
-  let incomeSum = retrieveIncomeData.reduce(function (prev, current) {
+  const parsedIncomes = incomes.map((i) => {
+    return JSON.parse(i.content);
+  });
+
+  let incomeSum = parsedIncomes.reduce(function (prev, current) {
     return prev + +current.amount;
   }, 0);
 
   props.incomeTotal(incomeSum);
-
-  useEffect(() => {
-    retrieveIncome();
-  }, []);
 
   return (
     <div className="income">
@@ -115,16 +109,16 @@ const Income = (props) => {
           </p>
         )}
       </div>
-      {incomeList && !entryIncluded && <p>You have not included any income</p>}
+      {!incomes && incomeList && <p>You have not included any income</p>}
       <div className="incomeList">
         {incomeList &&
-          entryIncluded &&
-          retrieveIncomeData.map((income) => (
+          incomes &&
+          incomes.map((income) => (
             <IncomeList
               key={income.id}
-              description={income.description}
+              description={JSON.parse(income.content).description}
               currency={props.currency}
-              amount={income.amount}
+              amount={JSON.parse(income.content).amount}
               bttn={
                 <img
                   src={del}

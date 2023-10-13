@@ -5,6 +5,7 @@ import "./incomeFormElements.css";
 const IncomeForm = (props) => {
   const [enteredDescription, setEnteredDescription] = useState("");
   const [enteredAmount, setEnteredAmount] = useState("");
+  const pretext = "income-";
 
   const descriptionChangeHandler = (e) => {
     setEnteredDescription(e.target.value);
@@ -18,10 +19,11 @@ const IncomeForm = (props) => {
     e.preventDefault();
 
     const incomeInfo = {
+      pretext: pretext,
       description: enteredDescription,
       amount: enteredAmount,
       id: Math.random().toString(),
-    }
+    };
 
     props.onIncomeInfoInput(incomeInfo);
 
@@ -32,7 +34,7 @@ const IncomeForm = (props) => {
 
   return (
     <form onSubmit={submitHandler}>
-      <div className="col-8">
+      <div className="col-8 incomeInput">
         <input
           className="incomeInputField"
           value={enteredDescription}
@@ -49,7 +51,7 @@ const IncomeForm = (props) => {
           placeholder="income amount"
         />
       </div>
-      <div className="col-8 d-flex offset-md-1">
+      <div className="col-8 d-flex ">
         <button type="submit">
           <span>ADD</span>
         </button>
