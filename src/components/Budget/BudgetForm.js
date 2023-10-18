@@ -35,7 +35,7 @@ const BudgetForm = (props) => {
     <div>
       <form onSubmit={submitHandler}>
         <input
-          className="incomeInputField"
+          className="col-8 incomeInputField offset-4"
           placehodler="budget-amount"
           type="number"
           onChange={budgetAmountHandler}
@@ -44,7 +44,7 @@ const BudgetForm = (props) => {
         />
         <BudgetOptions optionsValue={typeChangeHandler} />
 
-        <div className="col-8 d-flex offset-md-2">
+        <div className="col-8 d-flex offset-md-4 mt-1">
           <button type="submit">
             <span>ADD</span>
           </button>

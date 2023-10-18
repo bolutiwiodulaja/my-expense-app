@@ -34,7 +34,7 @@ const IncomeForm = (props) => {
 
   return (
     <form onSubmit={submitHandler}>
-      <div className="col-8 incomeInput">
+      <div className="col-8 incomeInput ">
         <input
           className="incomeInputField"
           value={enteredDescription}
@@ -51,7 +51,7 @@ const IncomeForm = (props) => {
           placeholder="income amount"
         />
       </div>
-      <div className="col-8 d-flex ">
+      <div className="col-8 d-flex mt-1 ">
         <button type="submit">
           <span>ADD</span>
         </button>

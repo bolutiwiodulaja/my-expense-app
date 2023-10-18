@@ -27,7 +27,7 @@ const BudgetOptions = (props) => {
     setBudget(e.target.value);
   };
   return (
-    <div className="offset-2 col-8">
+    <div className="offset-4 col-8 mt-1">
       <select
         value={budget}
         onChange={onChangeHandler}

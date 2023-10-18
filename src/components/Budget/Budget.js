@@ -297,7 +297,7 @@ const Budget = (props) => {
             }
           />
         ))}
-      <div className="d-flex flex-column justify-content-end">
+      <div className="d-flex flex-column justify-content-end ">
         {!editBudget && !budgetList && (
           <button onClick={editBudgetHandler}>
             <span>ADD BUDGET</span>

@@ -26,6 +26,7 @@ export const NameAndCurrency = (props) => {
   const [verifyUsername, setVerifyUsername] = useState("");
   const [verifyPassword, setVerifyPassword] = useState("");
   const [usernameExists, setUsernameExists] = useState();
+  const [newAccount, setNewAccount] = useState(false);
   const [incorrectUsernameOrPassword, setIncorrectUsernameOrPassword] =
     useState();
   const pretext = "username&Password-";
@@ -102,6 +103,7 @@ export const NameAndCurrency = (props) => {
           },
         }),
       }).then(retrieveData);
+      setNewAccount(true);
     }
   };
 
@@ -192,6 +194,12 @@ export const NameAndCurrency = (props) => {
           {usernameExists && (
             <p className="nameAndCurrencyInputField">
               A user with that username already exists. Try another?
+            </p>
+          )}
+
+          {newAccount && (
+            <p className="nameAndCurrencyInputField">
+              You have successfully registered your account and can now login.
             </p>
           )}
           <button type="submit" className="mb-2">
