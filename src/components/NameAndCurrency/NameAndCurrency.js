@@ -191,17 +191,7 @@ export const NameAndCurrency = (props) => {
               <option value={currency.value}>{currency.currency}</option>
             ))}
           </select>
-          {usernameExists && (
-            <p className="nameAndCurrencyInputField">
-              A user with that username already exists. Try another?
-            </p>
-          )}
 
-          {newAccount && (
-            <p className="nameAndCurrencyInputField">
-              You have successfully registered your account and can now login.
-            </p>
-          )}
           <button type="submit" className="mb-2">
             Register Account
           </button>
@@ -220,11 +210,7 @@ export const NameAndCurrency = (props) => {
             placeholder="password"
             onChange={verifyPasswordHandler}
           ></input>
-          {incorrectUsernameOrPassword && (
-            <p className="nameAndCurrencyInputField">
-              Incorrect username or password. Try again.
-            </p>
-          )}
+
           <button type="submit" className="mb-2">
             Login
           </button>
@@ -243,6 +229,36 @@ export const NameAndCurrency = (props) => {
           </button>
         )}
       </div>
+
+      {loggingIn && incorrectUsernameOrPassword && (
+        <p className="messages">
+          <div className="row d-flex justify-content-center ">
+            <div className="col-10">
+              Incorrect username or password. Try again.
+            </div>
+          </div>
+        </p>
+      )}
+
+      {registering && usernameExists && (
+        <p className="messages">
+          <div className="row d-flex justify-content-center ">
+            <div className="col-10">
+              A user with that username already exists. Try another?
+            </div>
+          </div>
+        </p>
+      )}
+
+      {registering && newAccount && (
+        <p className="messages ">
+          <div className="row d-flex justify-content-center ">
+            <div className="col-10">
+              You have successfully registered your account and can now login.
+            </div>
+          </div>
+        </p>
+      )}
 
       {!loggingIn && !registering && (
         <p className="appDescription">
